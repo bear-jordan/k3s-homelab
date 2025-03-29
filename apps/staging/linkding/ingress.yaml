@@ -6,7 +6,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: lab.bearjordan.dev
+    - host: ld.bearjordan.dev
       http:
         paths:
           - backend:

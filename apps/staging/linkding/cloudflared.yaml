@@ -37,7 +37,7 @@ spec:
       volumes:
         - name: creds
           secret:
-            secretName: tunnel-credentials
+            secretName: ld-tunnel-credentials
         - name: config
           configMap:
             name: cloudflared
@@ -56,7 +56,6 @@ data:
     metrics: 0.0.0.0:2000
     no-autoupdate: true
     ingress:
-    - hostname: lab.bearjordan.dev
+    - hostname: ld.bearjordan.dev
       service: http://linkding:9090
     - service: http_status:404
-
