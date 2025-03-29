@@ -1,8 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - deployment.yaml
-  - storage.yaml
+  # - deployment.yaml
+  # - linkding-credentials.yaml
   - namespace.yaml
-  - service.yaml
-  - linkding-credentials.yaml
+  # - service.yaml
+  # - storage.yaml
