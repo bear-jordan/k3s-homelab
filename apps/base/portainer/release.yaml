@@ -1,0 +1,35 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: portainer
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: portainer
+      version: 1.0.63
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: portainer
+  interval: 1m0s
+  targetNamespace: portainer
+  values:
+    replicaCount: 1
+    image:
+      repository: portainer/portainer-ce
+      tag: 2.27.3
+    service:
+      type: ClusterIP
+      httpPort: 9000
+    ingress:
+      enabled: true
+      ingressClassName: traefik
+      hosts:
+        - host: pt.bearjordan.dev
+          paths:
+            - path: "/"
+    persistence:
+      enabled: true
+      size: "500Mi"
+      existingClaim: portainer-data-pvc
