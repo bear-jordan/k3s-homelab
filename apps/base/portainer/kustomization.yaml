@@ -4,6 +4,5 @@ namespace: portainer
 resources:
   - storage.yaml
   - namespace.yaml
-  - service.yaml
   - release.yaml
   - repository.yaml
