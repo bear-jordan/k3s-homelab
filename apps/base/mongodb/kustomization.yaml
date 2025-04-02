@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: mongodb
 resources:
   - namespace.yaml
-  - release.yaml
+  - mongodb-release.yaml
+  - mongodb-crd-release.yaml
   - repository.yaml
