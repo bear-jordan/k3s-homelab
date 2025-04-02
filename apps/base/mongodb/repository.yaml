@@ -4,5 +4,7 @@ metadata:
   name: bitnami
   namespace: mongodb
 spec:
-  url: oci://registry-1.docker.io/bitnamicharts/mongodb
+  url: oci://registry-1.docker.io/bitnamicharts/
   interval: 12h
+  secretRef:
+    name: docker-credentials
