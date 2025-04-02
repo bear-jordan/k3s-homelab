@@ -23,4 +23,31 @@ spec:
         requests:
           cpu: 500m
           memory: 200Mi
-      replicas: 1
+    database:
+      name: mongodb-database
+    resource:
+      users:
+        - name: admin
+          db: admin
+          passwordSecretRef:
+            name: admin-credentials
+          roles:
+            - name: clusterAdmin
+              db: admin
+            - name: userAdminAnyDatabase
+              db: admin
+            - name: readWriteAnyDatabase
+              db: admin
+            - name: dbAdminAnyDatabase
+              db: admin
+        - name: unifi
+          db: unifi
+          passwordSecretRef:
+            name: unifi-credentials
+          roles:
+            - name: readWrite
+              db: unifi
+            - name: dbAdmin
+              db: unifi
+            - name: userAdmin
+              db: unifi

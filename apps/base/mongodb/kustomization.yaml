@@ -4,3 +4,5 @@ resources:
   - mongodb-release.yaml
   - mongodb-crd-release.yaml
   - repository.yaml
+  - admin-credentials.yaml
+  - unifi-credentials.yaml
