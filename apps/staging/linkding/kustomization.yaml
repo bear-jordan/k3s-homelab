@@ -6,3 +6,4 @@ resources:
   - cloudflared.yaml
   - tunnel-credentials.yaml
   - ingress.yaml
+  - namespace.yaml
