@@ -10,7 +10,7 @@ spec:
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
-        name: podinfo
+        name: bitnami
       version: 16.4.11
   interval: 1m0s
   valuesFrom:
