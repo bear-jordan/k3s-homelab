@@ -6,13 +6,17 @@ metadata:
   name: unifi-svc
 spec:
   ports:
-    - port: 8443
+    - name: web-admin
+      port: 8443
       protocol: TCP
-    - port: 8080
+    - name: device-communication
+      port: 8080
       protocol: TCP
-    - port: 3478
+    - name: stun
+      port: 3478
       protocol: UDP
-    - port: 10001
+    - name: ap-discovery
+      port: 10001
       protocol: UDP
   selector:
     app: unifi-svc
