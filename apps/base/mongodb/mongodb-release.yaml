@@ -29,7 +29,7 @@ spec:
     createResource: true
     resource:
       tls:
-        enabled: false
+        enabled: true
       users:
         - name: admin
           db: admin
