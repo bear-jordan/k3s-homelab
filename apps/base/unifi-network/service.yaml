@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app: unifi-network
-  name: unifi-svc
+  name: unifi-network
 spec:
   ports:
     - name: web-admin
@@ -19,5 +19,5 @@ spec:
       port: 10001
       protocol: UDP
   selector:
-    app: unifi-svc
+    app: unifi-network
   type: ClusterIP
