@@ -21,14 +21,18 @@ spec:
     service:
       type: ClusterIP
       httpPort: 9000
+      httpsPort: 9443
     ingress:
       enabled: true
       ingressClassName: traefik
       hosts:
-        - host: pt.bearjordan.dev
+        - host: ptr.bearjordan.dev
           paths:
             - path: "/"
     persistence:
       enabled: true
       size: "500Mi"
       existingClaim: portainer-data-pvc
+    tls:
+      force: true
+      existingSecret: portainer-certificate
