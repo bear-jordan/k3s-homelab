@@ -25,6 +25,7 @@ spec:
           memory: 200Mi
     database:
       name: mongodb-database
+    createResource: true
     resource:
       users:
         - name: admin
