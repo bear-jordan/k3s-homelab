@@ -21,12 +21,11 @@ spec:
     service:
       type: ClusterIP
       httpPort: 9000
-      httpsPort: 9443
     ingress:
       enabled: true
       ingressClassName: traefik
       hosts:
-        - host: ptr.bearjordan.dev
+        - host: ptr.bearjordan.local
           paths:
             - path: "/"
     persistence:
