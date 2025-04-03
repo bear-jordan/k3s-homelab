@@ -33,6 +33,3 @@ spec:
       enabled: true
       size: "500Mi"
       existingClaim: portainer-data-pvc
-    tls:
-      force: true
-      existingSecret: portainer-certificate
