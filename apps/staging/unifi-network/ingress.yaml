@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: unifi
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: unifi.bearjordan.dev
+      http:
+        paths:
+          - backend:
+              service:
+                name: unifi-svc
+                port:
+                  number: 8443
+            path: /
+            pathType: Prefix

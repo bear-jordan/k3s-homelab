@@ -4,3 +4,4 @@ namespace: unifi-network
 resources:
   - ../../base/unifi-network/
   - namespace.yaml
+  - ingress.yaml
