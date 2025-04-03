@@ -49,6 +49,6 @@ data:
   MONGO_DBNAME: unifi
   MONGO_USER: unifi
   MONGO_HOST: mongodb-replica-set-0.mongodb-replica-set-svc.mongodb.svc.cluster.local,mongodb-replica-set-1.mongodb-replica-set-svc.mongodb.svc.cluster.local,mongodb-replica-set-2.mongodb-replica-set-svc.mongodb.svc.cluster.local
-  MONGO_AUTHSOURCE: admin
+  MONGO_AUTHSOURCE: unifi
   MONGO_REPLICASET: mongodb-replica-set
   MONGO_SSL: "false"
