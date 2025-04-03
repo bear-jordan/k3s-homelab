@@ -28,6 +28,8 @@ spec:
       namespace: mongodb
     createResource: true
     resource:
+      tls:
+        enabled: false
       users:
         - name: admin
           db: admin
