@@ -29,7 +29,8 @@ spec:
     createResource: true
     resource:
       tls:
-        enabled: true
+        # TODO: Self-signed certs are refused
+        enabled: false
         useCertManager: true
         certificateKeySecretRef: tls-certificate
         caCertificateSecretRef: tls-ca-key-pair
