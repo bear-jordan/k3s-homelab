@@ -43,6 +43,7 @@ spec:
             - name: dbAdminAnyDatabase
               db: admin
           scramCredentialsSecretName: admin-scram
+          connectionStringSecretName: admin-connection
         - name: unifi
           db: unifi
           passwordSecretRef:
@@ -55,3 +56,4 @@ spec:
             - name: userAdmin
               db: unifi
           scramCredentialsSecretName: unifi-scram
+          connectionStringSecretName: unifi-connection
