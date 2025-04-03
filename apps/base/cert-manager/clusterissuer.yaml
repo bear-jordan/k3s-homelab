@@ -7,7 +7,7 @@ spec:
     email: bearjordan@gmail.com
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: cloudflare-api-key
+      name: cloudflare-tls-key
     solvers:
       - dns01:
           cloudflare:
