@@ -42,6 +42,7 @@ spec:
               db: admin
             - name: dbAdminAnyDatabase
               db: admin
+          scramCredentialsSecretName: admin-scram
         - name: unifi
           db: unifi
           passwordSecretRef:
@@ -53,3 +54,4 @@ spec:
               db: unifi
             - name: userAdmin
               db: unifi
+          scramCredentialsSecretName: unifi-scram
