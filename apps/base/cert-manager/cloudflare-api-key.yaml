@@ -3,7 +3,7 @@ data:
   api-token: ENC[AES256_GCM,data:VFUydxYGzr5AjrSXjDANtVbQUWARWWLc2ntc9M7QljYd19YYHtanQ8XmurBXwijx9m4HCQ==,iv:rUI562mc41hFsWBFwCg9XkBILxCXiE7NcJhYx9oCpGk=,tag:z/ADgw/Las+5JR3gJKlTfw==,type:str]
 kind: Secret
 metadata:
-  name: cloudfare-api-key
+  name: cloudflare-api-key
 sops:
   kms: []
   gcp_kms: []
