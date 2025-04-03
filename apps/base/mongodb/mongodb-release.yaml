@@ -30,6 +30,9 @@ spec:
     resource:
       tls:
         enabled: true
+        useCertManager: true
+        certificateKeySecretRef: tls-certificate
+        caCertificateSecretRef: tls-ca-key-pair
       users:
         - name: admin
           db: admin
