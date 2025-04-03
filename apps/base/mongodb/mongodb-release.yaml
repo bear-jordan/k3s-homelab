@@ -29,7 +29,7 @@ spec:
     createResource: true
     resource:
       tls:
-        enabled: true
+        enabled: false
         useCertManager: true
         certificateKeySecretRef: tls-certificate
         caCertificateSecretRef: tls-ca-key-pair
