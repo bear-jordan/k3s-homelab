@@ -54,11 +54,9 @@ spec:
           passwordSecretRef:
             name: unifi-credentials
           roles:
-            - name: readWrite
+            - name: dbOwner
               db: unifi
-            - name: dbAdmin
-              db: unifi
-            - name: userAdmin
-              db: unifi
+            - name: dbOwner
+              db: unifi_stat
           scramCredentialsSecretName: unifi-scram
           connectionStringSecretName: unifi-connection
