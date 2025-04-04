@@ -42,8 +42,8 @@ kind: ConfigMap
 metadata:
   name: config
 data:
-  PUID: "1000"
   PGID: "1000"
+  PUID: "1000"
   TZ: Etc/UTC
   MONGO_PORT: "27017"
   MONGO_DBNAME: unifi
