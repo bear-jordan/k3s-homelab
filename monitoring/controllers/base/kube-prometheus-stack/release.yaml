@@ -34,4 +34,4 @@ spec:
         enabled: true
         ingressClassName: traefik
         hosts:
-          - gr.bearjordan.dev
+          - gr.bearjordan.local

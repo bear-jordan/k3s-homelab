@@ -56,6 +56,8 @@ data:
     metrics: 0.0.0.0:2000
     no-autoupdate: true
     ingress:
+    - hostname: ld.bearjordan.local
+      service: http://linkding:9090
     - hostname: ld.bearjordan.dev
       service: http://linkding:9090
     - service: http_status:404
