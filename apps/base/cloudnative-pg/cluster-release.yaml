@@ -1,0 +1,61 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cloudnative-pg
+spec:
+  chart:
+    spec:
+      chart: cluster
+      version: 0.23.2
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: cnpg
+  interval: 1m0s
+  values:
+    type: postgresql
+    version:
+      postgresql: "16"
+    cluster:
+      instances: 3
+      storage:
+        size: 8Gi
+        storageClass: ""
+      resources:
+        limits:
+          cpu: 2000m
+          memory: 2Gi
+        requests:
+          cpu: 2000m
+          memory: 2Gi
+      enableSuperuserAccess: true
+      enablePDB: true
+      roles:
+        []
+        # - name: dante
+        #   ensure: present
+        #   comment: Dante Alighieri
+        #   login: true
+        #   superuser: false
+        #   inRoles:
+        #     - pg_monitor
+        #     - pg_signal_backend
+
+      monitoring:
+        enabled: true
+        podMonitor:
+          enabled: true
+        prometheusRule:
+          enabled: true
+
+      initdb:
+        database: app
+        owner: "" # Defaults to the database name
+        secret:
+          name: "" # Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
+        options: []
+        encoding: UTF8
+        postInitSQL:
+          - CREATE EXTENSION IF NOT EXISTS vector;
+        postInitApplicationSQL: []
+        postInitTemplateSQL: []
