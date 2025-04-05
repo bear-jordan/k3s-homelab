@@ -6,7 +6,7 @@ spec:
   chart:
     spec:
       chart: cluster
-      version: 0.23.2
+      version: 0.2.1
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
