@@ -8,6 +8,14 @@ spec:
     scheme: https
 ---
 apiVersion: traefik.containo.us/v1alpha1
+kind: ServersTransport
+metadata:
+  name: unifi-transport
+  namespace: unifi-network
+spec:
+  insecureSkipVerify: true
+---
+apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: unifi-ingress
@@ -22,5 +30,6 @@ spec:
         - name: unifi-network
           port: 8443
           scheme: https
+          serversTransport: unifi-transport
   tls:
     secretName: unifi-tls-secret
