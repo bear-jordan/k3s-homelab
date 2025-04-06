@@ -4,3 +4,5 @@ resources:
   - release.yaml
   - repository.yaml
   - cloudflare-api-key.yaml
+  - secrets.yaml
+  - clusterissuer.yaml
