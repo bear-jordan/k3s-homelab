@@ -5,7 +5,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: unifi.bearjordan.local
+    - host: unifi.bearjordan.home
       http:
         paths:
           - backend:

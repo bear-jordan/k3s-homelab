@@ -25,7 +25,7 @@ spec:
       enabled: true
       ingressClassName: traefik
       hosts:
-        - host: ptr.bearjordan.local
+        - host: ptr.bearjordan.home
           paths:
             - path: "/"
     persistence:
