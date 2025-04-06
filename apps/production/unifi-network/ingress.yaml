@@ -12,6 +12,6 @@ spec:
               service:
                 name: unifi-network
                 port:
-                  number: 8080
+                  number: 8443
             path: /
             pathType: Prefix
