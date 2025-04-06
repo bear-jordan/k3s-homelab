@@ -10,7 +10,7 @@ spec:
         paths:
           - backend:
               service:
-                name: unifi-svc
+                name: unifi-network
                 port:
                   number: 8080
             path: /
