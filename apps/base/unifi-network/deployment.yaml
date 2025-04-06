@@ -32,21 +32,6 @@ spec:
                 name: mongo-credentials
             - configMapRef:
                 name: config
-        - name: mongos
-          image: mongo:4.4
-          command:
-            - "mongos"
-            - "--configdb"
-            - "mongodb-replica-set/mongo-0.mongodb-replica-set-svc.mongodb.svc.cluster.local:27017,mongo-1.mongodb-replica-set-svc.mongodb.svc.cluster.local:27017,mongo-2.mongodb-replica-set-svc.mongodb.svc.cluster.local:27017"
-          ports:
-            - containerPort: 27017
-          resources:
-            requests:
-              cpu: "50m"
-              memory: "64Mi"
-            limits:
-              cpu: "100m"
-              memory: "128Mi"
       volumes:
         - name: unifi-data-pvc
           persistentVolumeClaim:
@@ -63,6 +48,6 @@ data:
   MONGO_PORT: "27017"
   MONGO_DBNAME: unifi
   MONGO_USER: unifi
-  MONGO_HOST: localhost
+  MONGO_HOST: mongodb-replica-set-0.mongodb-replica-set-svc.mongodb.svc.cluster.local:27017,mongodb-replica-set-1.mongodb-replica-set-svc.mongodb.svc.cluster.local:27017,mongodb-replica-set-2.mongodb-replica-set-svc.mongodb.svc.cluster.local:27017
   MONGO_AUTHSOURCE: unifi
   MONGO_TLS: "false"
