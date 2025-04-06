@@ -1,23 +1,26 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
 metadata:
-  name: unifi
-  annotations:
-    traefik.ingress.kubernetes.io/service.serversscheme: https
+  name: unifi-https-middleware
+  namespace: unifi-network
 spec:
-  ingressClassName: traefik
-  rules:
-    - host: unifi.bearjordan.home
-      http:
-        paths:
-          - backend:
-              service:
-                name: unifi-network
-                port:
-                  number: 8443
-            path: /
-            pathType: Prefix
+  redirectScheme:
+    scheme: https
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: unifi-ingress
+  namespace: unifi-network
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`unifi.bearjordan.home`)
+      kind: Rule
+      services:
+        - name: unifi-network
+          port: 8443
+          scheme: https
   tls:
-    - hosts:
-        - unifi.bearjordan.home
-      secretName: unifi-tls-secret
+    secretName: unifi-tls-secret
