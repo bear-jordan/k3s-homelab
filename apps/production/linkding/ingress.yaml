@@ -16,3 +16,7 @@ spec:
                   number: 9090
             path: /
             pathType: Prefix
+  tls:
+    - hosts:
+        - ld.bearjordan.home
+      secretName: ld-tls-secret

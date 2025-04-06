@@ -7,3 +7,4 @@ resources:
   - tunnel-credentials.yaml
   - ingress.yaml
   - namespace.yaml
+  - certificate.yaml
