@@ -4,3 +4,4 @@ namespace: portainer
 resources:
   - ../../base/portainer/
   - namespace.yaml
+  - certificate.yaml

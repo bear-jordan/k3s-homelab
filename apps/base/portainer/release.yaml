@@ -28,6 +28,10 @@ spec:
         - host: ptr.bearjordan.home
           paths:
             - path: "/"
+      tls:
+        - hosts:
+            - ptr.bearjordan.home
+          secretName: ptr-tls-secret
     persistence:
       enabled: true
       size: "500Mi"
