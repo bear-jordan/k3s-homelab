@@ -1,0 +1,43 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rook-ceph-cluster
+spec:
+  chart:
+    spec:
+      chart: rook-ceph-cluster
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: rook-release
+      version: 1.16.1
+  interval: 1m0s
+  values:
+    operatorNamespace: rook
+    monitoring:
+      enabled: true
+    cephClusterSpec:
+      storage:
+        useAllNodes: true
+        useAllDevices: false
+        nodes:
+          - name: ubuntu
+            devices:
+              - name: /dev/nvme0n1p5
+      mon:
+        count: 1
+        allowMultiplePerNode: true
+      mgr:
+        count: 1
+      dashboard:
+        enabled: true
+        ssl: false
+    ingress:
+      dashboard:
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: rook.bearjordan.home
+        host:
+          name: rook.bearjordan.home
+          path: "/"
+          pathType: Prefix
+        ingressClassName: traefik

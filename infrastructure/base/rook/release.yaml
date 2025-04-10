@@ -1,0 +1,19 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rook-ceph
+spec:
+  chart:
+    spec:
+      chart: rook-ceph
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: rook-release
+      version: 1.16.1
+  interval: 1m0s
+  values:
+    crds:
+      enabled: true
+    monitoring:
+      enabled: true
