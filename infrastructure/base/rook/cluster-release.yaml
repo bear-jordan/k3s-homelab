@@ -23,7 +23,7 @@ spec:
         nodes:
           - name: ubuntu
             devices:
-              - name: /dev/nvme0n1p5
+              - name: /dev/nvme0n1p4
       mon:
         count: 1
         allowMultiplePerNode: true
