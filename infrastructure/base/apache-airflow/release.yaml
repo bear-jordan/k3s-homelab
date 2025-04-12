@@ -1,0 +1,488 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: apache-airflow
+spec:
+  chart:
+    spec:
+      chart: airflow
+      version: 1.16.0
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: apache-airflow
+  interval: 1m0s
+  values:
+    defaultAirflowTag: "2.10.5"
+    airflowVersion: "2.10.5"
+    ingress:
+      web:
+        enabled: true
+        path: "/"
+        pathType: Prefix
+        hosts:
+          - name: air.bearjordan.home
+            tls:
+              enabled: true
+              secretName: airflow-tls-secret
+        ingressClassName: traefik
+
+      flower:
+        enabled: true
+        path: "/"
+        pathType: Prefix
+        host: flwr.bearjordan.home
+        hosts:
+          - name: flwr.bearjordan.home
+            tls:
+              enabled: true
+              secretName: airflow-tls-secret
+        ingressClassName: traefik
+
+    executor: "CeleryExecutor"
+    data:
+      # If secret names are provided, use those secrets
+      # These secrets must be created manually, eg:
+      #
+      # kind: Secret
+      # apiVersion: v1
+      # metadata:
+      #   name: custom-airflow-metadata-secret
+      # type: Opaque
+      # data:
+      #   connection: base64_encoded_connection_string
+
+      metadataSecretName: ~
+      # When providing secret names and using the same database for metadata and
+      # result backend, for Airflow < 2.4.0 it is necessary to create a separate
+      # secret for result backend but with a db+ scheme prefix.
+      # For Airflow >= 2.4.0 it is possible to not specify the secret again,
+      # as Airflow will use sql_alchemy_conn with a db+ scheme prefix by default.
+      resultBackendSecretName: ~
+      brokerUrlSecretName: ~
+
+      # Otherwise pass connection values in
+      metadataConnection:
+        user: postgres
+        pass: postgres
+        protocol: postgresql
+        host: ~
+        port: 5432
+        db: postgres
+        sslmode: disable
+      # resultBackendConnection defaults to the same database as metadataConnection
+      resultBackendConnection: ~
+      # or, you can use a different database
+      # resultBackendConnection:
+      #   user: postgres
+      #   pass: postgres
+      #   protocol: postgresql
+      #   host: ~
+      #   port: 5432
+      #   db: postgres
+      #   sslmode: disable
+      # Note: brokerUrl can only be set during install, not upgrade
+      brokerUrl: ~
+
+    workers:
+      replicas: 1
+      revisionHistoryLimit: ~
+      command: ~
+      args:
+        - "bash"
+        - "-c"
+        - |-
+          exec \
+          airflow {{ semverCompare ">=2.0.0" .Values.airflowVersion | ternary "celery worker" "worker" }}
+
+      livenessProbe:
+        enabled: true
+        initialDelaySeconds: 10
+        timeoutSeconds: 20
+        failureThreshold: 5
+        periodSeconds: 60
+        command: ~
+
+      serviceAccount:
+        automountServiceAccountToken: true
+        create: true
+        name: ~
+
+      persistence:
+        enabled: true
+        # This policy determines whether PVCs should be deleted when StatefulSet is scaled down or removed.
+        size: 10Gi
+        storageClassName: local-path
+
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+      terminationGracePeriodSeconds: 600
+      logGroomerSidecar:
+        enabled: true
+        frequencyMinutes: 15
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+
+    # Airflow scheduler settings
+    scheduler:
+      enabled: true
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+      logGroomerSidecar:
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+
+    # Airflow webserver settings
+    webserver:
+      enabled: true
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+      defaultUser:
+        enabled: true
+        role: Admin
+        username: admin
+        email: admin@example.com
+        firstName: admin
+        lastName: user
+        password: admin
+
+    # Airflow Triggerer Config
+    triggerer:
+      enabled: true
+      persistence:
+        enabled: true
+        size: 10Gi
+        storageClassName: local-path
+
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+      logGroomerSidecar:
+        enabled: true
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+
+    # Airflow Dag Processor Config
+    dagProcessor:
+      enabled: ~
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      logGroomerSidecar:
+        enabled: true
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+
+    # Flower settings
+    flower:
+      enabled: true
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+    statsd:
+      enabled: true
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+    redis:
+      enabled: true
+      terminationGracePeriodSeconds: 600
+
+      persistence:
+        enabled: true
+        size: 1Gi
+        storageClassName: local-path
+
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+    ports:
+      flowerUI: 5555
+      airflowUI: 8080
+      workerLogs: 8793
+      triggererLogs: 8794
+      redisDB: 6379
+      statsdIngest: 9125
+      statsdScrape: 9102
+      pgbouncer: 6543
+      pgbouncerScrape: 9127
+      apiServer: 8080
+
+    postgresql:
+      enabled: true
+      auth:
+        enablePostgresUser: true
+        postgresPassword: postgres
+        username: admin
+        password: admin
+
+    config:
+      core:
+        dags_folder: '{{ include "airflow_dags" . }}'
+        load_examples: "False"
+        executor: "{{ .Values.executor }}"
+        colored_console_log: "False"
+        remote_logging: '{{- ternary "True" "False" (or .Values.elasticsearch.enabled .Values.opensearch.enabled) }}'
+        auth_manager: "airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager"
+      logging:
+        remote_logging: '{{- ternary "True" "False" (or .Values.elasticsearch.enabled .Values.opensearch.enabled) }}'
+        colored_console_log: "False"
+      metrics:
+        statsd_on: '{{ ternary "True" "False" .Values.statsd.enabled }}'
+        statsd_port: 9125
+        statsd_prefix: airflow
+        statsd_host: '{{ printf "%s-statsd" (include "airflow.fullname" .) }}'
+      webserver:
+        enable_proxy_fix: "True"
+        rbac: "True"
+      celery:
+        flower_url_prefix: '{{ ternary "" .Values.ingress.flower.path (eq .Values.ingress.flower.path "/") }}'
+        worker_concurrency: 16
+      scheduler:
+        standalone_dag_processor: '{{ ternary "True" "False" (or (semverCompare ">=3.0.0" .Values.airflowVersion) (.Values.dagProcessor.enabled | default false)) }}'
+        statsd_on: '{{ ternary "True" "False" .Values.statsd.enabled }}'
+        statsd_port: 9125
+        statsd_prefix: airflow
+        statsd_host: '{{ printf "%s-statsd" (include "airflow.fullname" .) }}'
+        run_duration: 41460
+      elasticsearch:
+        json_format: "True"
+        log_id_template: "{dag_id}_{task_id}_{execution_date}_{try_number}"
+      elasticsearch_configs:
+        max_retries: 3
+        timeout: 30
+        retry_timeout: "True"
+      kerberos:
+        keytab: "{{ .Values.kerberos.keytabPath }}"
+        reinit_frequency: "{{ .Values.kerberos.reinitFrequency }}"
+        principal: "{{ .Values.kerberos.principal }}"
+        ccache: "{{ .Values.kerberos.ccacheMountPath }}/{{ .Values.kerberos.ccacheFileName }}"
+      celery_kubernetes_executor:
+        kubernetes_queue: "kubernetes"
+      kubernetes:
+        namespace: "{{ .Release.Namespace }}"
+        airflow_configmap: '{{ include "airflow_config" . }}'
+        airflow_local_settings_configmap: '{{ include "airflow_config" . }}'
+        pod_template_file: '{{ include "airflow_pod_template_file" . }}/pod_template_file.yaml'
+        worker_container_repository: "{{ .Values.images.airflow.repository | default .Values.defaultAirflowRepository }}"
+        worker_container_tag: "{{ .Values.images.airflow.tag | default .Values.defaultAirflowTag }}"
+        multi_namespace_mode: '{{ ternary "True" "False" .Values.multiNamespaceMode }}'
+      kubernetes_executor:
+        namespace: "{{ .Release.Namespace }}"
+        pod_template_file: '{{ include "airflow_pod_template_file" . }}/pod_template_file.yaml'
+        worker_container_repository: "{{ .Values.images.airflow.repository | default .Values.defaultAirflowRepository }}"
+        worker_container_tag: "{{ .Values.images.airflow.tag | default .Values.defaultAirflowTag }}"
+        multi_namespace_mode: '{{ ternary "True" "False" .Values.multiNamespaceMode }}'
+
+    # Git sync
+    dags:
+      # Where dags volume will be mounted. Works for both persistence and gitSync.
+      # If not specified, dags mount path will be set to $AIRFLOW_HOME/dags
+      mountPath: ~
+      persistence:
+        # Annotations for dags PVC
+        annotations: {}
+        # Enable persistent volume for storing dags
+        enabled: false
+        # Volume size for dags
+        size: 1Gi
+        # If using a custom storageClass, pass name here
+        storageClassName:
+        # access mode of the persistent volume
+        accessMode: ReadWriteOnce
+        ## the name of an existing PVC to use
+        existingClaim:
+        ## optional subpath for dag volume mount
+        subPath: ~
+      gitSync:
+        enabled: false
+
+        # git repo clone url
+        # ssh example: git@github.com:apache/airflow.git
+        # https example: https://github.com/apache/airflow.git
+        repo: https://github.com/apache/airflow.git
+        branch: v2-2-stable
+        rev: HEAD
+        # The git revision (branch, tag, or hash) to check out, v4 only
+        ref: v2-2-stable
+        depth: 1
+        # the number of consecutive failures allowed before aborting
+        maxFailures: 0
+        # subpath within the repo where dags are located
+        # should be "" if dags are at repo root
+        subPath: "tests/dags"
+        # if your repo needs a user name password
+        # you can load them to a k8s secret like the one below
+        #   ---
+        #   apiVersion: v1
+        #   kind: Secret
+        #   metadata:
+        #     name: git-credentials
+        #   data:
+        #     # For git-sync v3
+        #     GIT_SYNC_USERNAME: <base64_encoded_git_username>
+        #     GIT_SYNC_PASSWORD: <base64_encoded_git_password>
+        #     # For git-sync v4
+        #     GITSYNC_USERNAME: <base64_encoded_git_username>
+        #     GITSYNC_PASSWORD: <base64_encoded_git_password>
+        # and specify the name of the secret below
+        #
+        # credentialsSecret: git-credentials
+        #
+        #
+        # If you are using an ssh clone url, you can load
+        # the ssh private key to a k8s secret like the one below
+        #   ---
+        #   apiVersion: v1
+        #   kind: Secret
+        #   metadata:
+        #     name: airflow-ssh-secret
+        #   data:
+        #     # key needs to be gitSshKey
+        #     gitSshKey: <base64_encoded_data>
+        # and specify the name of the secret below
+        # sshKeySecret: airflow-ssh-secret
+        #
+        # Or set sshKeySecret with your key
+        # sshKey: |-
+        #   -----BEGIN {OPENSSH PRIVATE KEY}-----
+        #   ...
+        #   -----END {OPENSSH PRIVATE KEY}-----
+        #
+        # If you are using an ssh private key, you can additionally
+        # specify the content of your known_hosts file, example:
+        #
+        # knownHosts: |
+        #    <host1>,<ip1> <key1>
+        #    <host2>,<ip2> <key2>
+
+        # interval between git sync attempts in seconds
+        # high values are more likely to cause DAGs to become out of sync between different components
+        # low values cause more traffic to the remote git repository
+        # Go-style duration string (e.g. "100ms" or "0.1s" = 100ms).
+        # For backwards compatibility, wait will be used if it is specified.
+        period: 5s
+        wait: ~
+        # add variables from secret into gitSync containers, such proxy-config
+        envFrom: ~
+        # envFrom: |
+        #   - secretRef:
+        #       name: 'proxy-config'
+
+        containerName: git-sync
+        uid: 65533
+
+        # When not set, the values defined in the global securityContext will be used
+        securityContext: {}
+        #  runAsUser: 65533
+        #  runAsGroup: 0
+
+        securityContexts:
+          container: {}
+
+        # container level lifecycle hooks
+        containerLifecycleHooks: {}
+
+        # Mount additional volumes into git-sync. It can be templated like in the following example:
+        #   extraVolumeMounts:
+        #     - name: my-templated-extra-volume
+        #       mountPath: "{{ .Values.my_custom_path }}"
+        #       readOnly: true
+        extraVolumeMounts: []
+        env: []
+        # Supported env vars for gitsync can be found at https://github.com/kubernetes/git-sync
+        # - name: ""
+        #   value: ""
+
+        # Configuration for empty dir volume
+        # emptyDirConfig:
+        #   sizeLimit: 1Gi
+        #   medium: Memory
+
+        resources: {}
+        #  limits:
+        #   cpu: 100m
+        #   memory: 128Mi
+        #  requests:
+        #   cpu: 100m
+        #   memory: 128Mi
+
+    logs:
+      # Configuration for empty dir volume (if logs.persistence.enabled == false)
+      # emptyDirConfig:
+      #   sizeLimit: 1Gi
+      #   medium: Memory
+
+      persistence:
+        # Enable persistent volume for storing logs
+        enabled: false
+        # Volume size for logs
+        size: 100Gi
+        # Annotations for the logs PVC
+        annotations: {}
+        # If using a custom storageClass, pass name here
+        storageClassName:
+        ## the name of an existing PVC to use
+        existingClaim:

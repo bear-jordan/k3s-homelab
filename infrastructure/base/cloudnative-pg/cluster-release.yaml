@@ -30,16 +30,6 @@ spec:
           memory: 2Gi
       enableSuperuserAccess: true
       enablePDB: true
-      roles:
-        []
-        # - name: dante
-        #   ensure: present
-        #   comment: Dante Alighieri
-        #   login: true
-        #   superuser: false
-        #   inRoles:
-        #     - pg_monitor
-        #     - pg_signal_backend
 
       monitoring:
         enabled: true
@@ -49,13 +39,10 @@ spec:
           enabled: true
 
       initdb:
-        database: app
-        owner: "" # Defaults to the database name
+        database: dev
+        owner: dev
         secret:
-          name: "" # Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
-        options: []
+          name: dev-secrets
         encoding: UTF8
         postInitSQL:
           - CREATE EXTENSION IF NOT EXISTS vector;
-        postInitApplicationSQL: []
-        postInitTemplateSQL: []
